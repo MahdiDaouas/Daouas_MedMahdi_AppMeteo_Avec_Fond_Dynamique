@@ -1,0 +1,146 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* prevents scrolling */
+    background-color: midnightblue;
+}
+.rainy , .snowy , .partly-cloudy, .cloudy, .sunny, .clear-night{
+    position: relative;
+    top: -10vh;
+    display: none;
+}
+.cloud{
+    position: absolute ;
+    z-index: 1;
+}
+.cloud img{
+    width: 350px;
+    height: 250px;
+}
+#cloud1{
+    left: 0;
+}
+#cloud2{
+    left:15%;
+    transform: scaleX(-1);
+}
+#cloud3{
+    left: 30%;
+}
+#cloud4{
+    left: 45%;
+}
+#cloud5{
+    left:60%;
+    transform: scaleX(-1);
+}
+#cloud6{
+    left: 75%;
+}
+.rain{
+    position: absolute;
+    z-index: 0;
+    top:20vh;
+}
+.rain img{
+    width: 280px;
+    height: 90vh;
+}
+#rain1{
+    left: 5%;        
+}
+#rain2{
+    left:20%;        
+}
+#rain3{
+    left:40%;        
+}
+#rain4{
+    left:60%;        
+}
+#rain5{
+    left:77%;        
+}
+.wind{
+    position: absolute;
+    z-index: 1;
+    
+}
+#wind1{
+    top:60vh;
+    left: 70%;
+}
+#wind2{
+    top:30vh;
+    left: 10%;
+}
+
+.sun{
+    position: absolute;
+    z-index: 1;
+    left: 40%;
+}
+.birds{
+    position: absolute;
+    z-index: 1;
+    left: 45%;
+}
+.birds img{
+    width: 250px;
+    height: 200px;
+}
+#birds1{
+    left: 25%;
+    top:35vh;
+}
+#birds2{
+    left: 70%;
+    top:20vh;
+}
+.sun img{
+    width: 300px;
+    height: 300px;
+}
+.snow{
+    position: absolute;
+    z-index: 0;
+    top:20vh;
+}
+.snow img{
+    width: 280px;
+    height: 90vh;
+}
+#snow1{
+    left: 5%;        
+}
+#snow2{
+    left:20%;        
+}
+#snow3{
+    left:40%;        
+}
+#snow4{
+    left:60%;        
+}
+#snow5{
+    left:77%;        
+}
+
+.stars{
+    position: absolute ;
+    z-index: 1;
+}
+.stars img{
+    width: 520px;
+    height: 300px;
+}
+#stars1{
+    left: 0;
+}
+#stars2{
+    left: 35%;
+}
+#stars3{
+    left: 70%;
+}
