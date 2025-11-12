@@ -144,3 +144,119 @@ html, body {
 #stars3{
     left: 70%;
 }
+
+.parent {
+    margin-top: 120px;
+    height: 80vh;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 25px;
+    
+}
+.div1, .WeatherPerHour, .div3, .div4{
+    background-color: aliceblue;
+    z-index: 5;
+    opacity: 70%;
+    border: white solid 5px;
+    border-radius: 5%;
+}
+    
+.div1 {
+    grid-row: span 3 / span 3;
+    grid-column-start: 2;
+    
+}
+.WeatherPerHour {
+    height: 100%;
+    grid-column: span 3 / span 3;
+    grid-column-start: 3;
+    grid-row-start: 4;
+    display: flex;
+    overflow-x: auto;       /* allow horizontal scroll */
+    overflow-y: hidden;      
+    gap: 10px;              /* space between blocks */
+    padding: 5px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    scroll-behavior: smooth;
+    
+}
+.hour-block {
+  background: white;
+  border-right: 1px solid #ccc; /* thin separator line */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+.hour-block{
+    justify-content: center;
+}
+.hour-block:hover{
+    background-color: grey;
+    cursor:pointer;
+}
+.hour-block:last-child {
+  border-right: none;
+}
+
+.hour-block img {
+  width: 50px;
+  height: 50px;
+}
+
+.hour-block .time {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.hour-block .temp {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+
+.div3 {
+    grid-column-start: 4;
+    grid-row-start: 3;
+}
+.div4 {
+    grid-column-start: 6;
+    grid-row-start: 2;
+}
+
+@media (max-width: 768px) {
+    .parent {
+        display: flex;
+        flex-direction: column;
+        gap: 15px; /* smaller gap for phones */
+    }
+    .div1 { order: 4; }
+    .div2 { order: 3; }
+    .div3 { order: 1; }
+    .div4 { order: 2; }
+}
+.other{
+    display: flex;
+    justify-content: center;
+}
+.box{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+}
+.hid{
+    display: none;
+}
+.hour-block.active {
+  background-color: rgba(100, 150, 255, 0.2);
+  border: 1px solid #6495ff;
+}
