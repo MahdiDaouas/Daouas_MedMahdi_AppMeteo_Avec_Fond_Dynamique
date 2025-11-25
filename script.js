@@ -1,11 +1,11 @@
 const temp=document.getElementById("temp");
 const dateTemp=document.getElementById("dateTemp");
-dateTemp.textContent= (new Date()).getHours();
 const hum=document.getElementById("hum");
 const wind=document.getElementById("vent");
 const cloud=document.getElementById("nuage");
+const ville=document.getElementById("ville");
 
-function initialiser(){
+function initialiser(){ // hides all animated layers (clouds, rain, sun…)
     document.querySelector(".snowy").style.display = "none";
     document.querySelector(".sunny").style.display = "none";
     document.querySelector(".clear-night").style.display = "none";
@@ -14,71 +14,38 @@ function initialiser(){
     document.querySelector(".rainy").style.display = "none";
 }
 
-function WeatherAnimation() {
-    const temp=Number(document.getElementById("temp").textContent);
+function WeatherAnimation(weather) {
+    console.log(weather)
     const hour=(document.getElementById("dateTemp").textContent).split(':')[0];
     const isDay = hour >= 7 && hour < 18;
-    console.log(hour);
-    const humidity=Number(document.getElementById("hum").textContent);
-    const wind=Number(document.getElementById("vent").textContent);
-    const clouds=Number(document.getElementById("nuage").textContent);
-    console.log(temp);
-
-    let weather;
-
-    if (temp <= 0) weather = "snowy";
-    else if (humidity > 85 && wind < 10 && hour >= 4 && hour <= 9) weather = "foggy";
-    else if (wind > 40 && humidity > 70 && temp > 15) weather = "thunderstorm";
-    else if (clouds > 80 && humidity > 70 && temp > 5) weather = "rainy";
-    else if (clouds > 90) weather = "overcast";
-    else if (clouds < 20 && isDay && temp > 15) weather = "sunny";
-    else if (clouds < 20 && !isDay) weather = "clear-night";
-    else if (clouds < 50 && isDay && temp > 10) weather = "partly-cloudy";
-    else if (clouds < 50 && !isDay) weather = "cloudy-night";
-    else if (temp < 10 && clouds > 40) weather = "cold-cloudy";
-    else weather = "cloudy";
-    initialiser()
-    console.log(weather);
-    switch(weather){
-        case "foggy":
-            document.body.style.backgroundColor="darkgrey";
-            break;
-        case "snowy":
-            document.querySelector(".snowy").style.display = "block";
-            document.body.style.backgroundColor="darkgrey";
-            break;
-        case "sunny":
-            document.querySelector(".sunny").style.display = "block";
-            document.body.style.backgroundColor="lightskyblue";
-            break;
-        case "clear-night":
-            document.querySelector(".clear-night").style.display = "block";
-            document.body.style.backgroundColor="midnightblue";
-            break;
-        case "cloudy":
-            document.querySelector(".cloudy").style.display = "block";
-            document.body.style.backgroundColor="lightgray";
-            break;
-        case "cloudy-night":
-            document.querySelector(".cloudy").style.display = "block";
-            document.body.style.backgroundColor="midnightblue";
-            break;
-        case "rainy":
-            document.querySelector(".rainy").style.display = "block";
-            document.body.style.backgroundColor="lightskyblue";
-            break;
-        case "thunderstorm":
-            document.querySelector(".rainy").style.display = "block";
-            document.body.style.backgroundColor="lightgray";
-            break;
-        case "partly-cloudy":
-            document.querySelector(".partly-cloudy").style.display = "block";
-            document.body.style.backgroundColor="lightskyblue";
-            break;
+    if(!isDay && weather=="sunny"){
+        weather="clear-night"
     }
+    // 1. Hide all animation overlays
+    document.querySelectorAll('.weather-overlay').forEach(div => {
+        div.style.display = 'none';
+    });
+
+    // 2. Show the correct animation overlay
+    const overlay = document.querySelector(`.${weather}.weather-overlay`);
+    if (overlay) overlay.style.display = 'block';
+
+    // 3. Apply ONLY the background class to body (safe & clean)
+    document.body.classList.remove('bg-sunny', 'bg-partly-cloudy', 'bg-cloudy', 'bg-rainy', 'bg-snowy', 'bg-clear-night');
+    if(!isDay){
+        weather="clear-night";
+    }
+    document.body.classList.add(`bg-${weather}`);
 
 
 }
+function defaultWeather() {
+    alert("Location denied");
+    LoadData(36.8065,10.1815,0);
+    ville.textContent="Tunis";
+
+}
+
 CurrentLocation()
 function CurrentLocation(){
     navigator.geolocation.getCurrentPosition(pos => {
@@ -86,8 +53,8 @@ function CurrentLocation(){
     const curlon = pos.coords.longitude;
     console.log(curlat);
     console.log(curlon);
-    LoadData(curlat,curlon)
-});
+    LoadData(curlat,curlon,1)
+}, () => defaultWeather());;
 }
 
 console.log("looool")
@@ -115,6 +82,7 @@ if (!container) {
     const hum1 = block.querySelectorAll('.hid')[0].textContent;
     const wind1 = block.querySelectorAll('.hid')[1].textContent;
     const cloud1 = block.querySelectorAll('.hid')[2].textContent;
+    const weather1 = block.querySelectorAll('.hid')[3].textContent;
 
     // update the details div (you can style this as you want)
     temp.textContent=temp1;
@@ -122,12 +90,12 @@ if (!container) {
     hum.textContent=hum1;
     wind.textContent=wind1;
     cloud.textContent=cloud1;
-    WeatherAnimation()
+    WeatherAnimation(weather1);
   });
 }
 
 // Loop through each block and add the click event
-document.addEventListener('DOMContentLoaded', WeatherAnimation())
+//document.addEventListener('DOMContentLoaded', WeatherAnimation())
 
 
 
@@ -135,7 +103,7 @@ const lat = 36.8065; // Example: Tunis
 const long = 10.1815;
 
 
-function LoadData(latitude,longitude){
+function LoadData(latitude,longitude,x){
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&timezone=auto&daily=temperature_2m_min,temperature_2m_max,weathercode&hourly=temperature_2m,relative_humidity_2m,cloud_cover,wind_speed_10m,weathercode`;
     fetch(url)
     .then(response => response.json())
@@ -152,7 +120,8 @@ function LoadData(latitude,longitude){
         relative_humidity_2m: hourly.relative_humidity_2m,
         wind_speed_10m: hourly.wind_speed_10m,
         cloud_cover: hourly.cloud_cover,
-        icon: hourly.weathercode.map(code => getWeatherIcon(code))
+        icon: hourly.weathercode.map(code => getWeatherIcon(code)),
+        weather_name: hourly.weathercode.map(code => mapWeatherCodeToChar(code))
         };
 
         const dailyData = daily.time.map((time, i) => ({
@@ -160,7 +129,8 @@ function LoadData(latitude,longitude){
         name: getDayName(time),
         minTemp: daily.temperature_2m_min[i],
         maxTemp: daily.temperature_2m_max[i],
-        icon: getWeatherIcon(daily.weathercode[i])
+        icon: getWeatherIcon(daily.weathercode[i]),
+        weather_name: mapWeatherCodeToChar(daily.weathercode[i])
         }));
 
         // Create 7 days (today + next 6)
@@ -201,6 +171,7 @@ function LoadData(latitude,longitude){
                 time: hourlyData.time[idx],
                 temp: hourlyData.temperature_2m[idx],
                 icon: hourlyData.icon[idx],
+                weather: hourlyData.weather_name[idx],
                 hum: hourlyData.relative_humidity_2m[idx],
                 wind: hourlyData.wind_speed_10m[idx],
                 cloud: hourlyData.cloud_cover[idx]
@@ -213,6 +184,7 @@ function LoadData(latitude,longitude){
                 time: hourlyData.time[start + i],
                 temp: hourlyData.temperature_2m[start + i],
                 icon: hourlyData.icon[start + i],
+                weather: hourlyData.weather_name[start + i],
                 hum: hourlyData.relative_humidity_2m[start + i],
                 wind: hourlyData.wind_speed_10m[start + i],
                 cloud: hourlyData.cloud_cover[start + i]
@@ -230,6 +202,7 @@ function LoadData(latitude,longitude){
                 <div class="hid">${h.hum}</div>
                 <div class="hid">${h.wind}</div>
                 <div class="hid">${h.cloud}</div>
+                <div class="hid">${h.weather}</div>
             `;
             weatherPerHour.appendChild(block);
             });
@@ -239,12 +212,18 @@ function LoadData(latitude,longitude){
             const hum1 = BlockHour.querySelectorAll('.hid')[0].textContent;
             const wind1 = BlockHour.querySelectorAll('.hid')[1].textContent;
             const cloud1 = BlockHour.querySelectorAll('.hid')[2].textContent;
+            const weather = BlockHour.querySelectorAll('.hid')[3].textContent;
             temp.textContent=temp1;
             dateTemp.textContent=time1;
             hum.textContent=hum1;
             wind.textContent=wind1;
             cloud.textContent=cloud1;
-            WeatherAnimation()
+            if(x==1){
+                ville.textContent="Current Location"
+            }
+            WeatherAnimation(weather)
+
+            document.getElementById('loading-text')?.classList.remove('visible');
         });
 
       weatherPerDay.appendChild(dayBlock);
@@ -270,7 +249,22 @@ function getDayName(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', { weekday: 'long' });
 }
+// Helper: get weather
+function mapWeatherCodeToChar(code) {
+    if (code === 0 || code === 1) return "sunny";
+    if (code === 2) return "partly-cloudy";
+    if (code === 3) return "cloudy";
 
+    if (code === 45 || code === 48) return "fog";
+
+    if ([61,63,65].includes(code) || [51,53,55].includes(code) || [56,57].includes(code) || [66,67].includes(code)) return "rainy";
+
+    if ([71,73,75].includes(code) || code === 77 || [85,86].includes(code)) return "snow";
+
+    if ([95,96,99].includes(code) || [80,81,82].includes(code)) return "thunderstorm";
+
+    return "unknown";
+}
 // Helper: get weather icon from code
 function getWeatherIcon(code) {
   // simple icons for demo
@@ -284,3 +278,49 @@ function getWeatherIcon(code) {
   if (code === 95) return '⛈️';
   return '🌈';
 }
+
+// Location selector (clean & simple)
+document.getElementById('search-city').addEventListener('click', () => {
+    const city = document.getElementById('city-input').value.trim();
+    if (!city) return;
+
+    // Show loading again
+    document.getElementById('loading-text')?.classList.add('visible');
+
+    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`)
+        .then(r => r.json())
+        .then(d => {
+            if (d[0]) {
+                document.getElementById('ville').textContent=city;
+                document.querySelector('.WeatherPerDay').innerHTML = '';
+                document.querySelector('.WeatherPerHour').innerHTML = '';
+                LoadData(d[0].lat, d[0].lon,0);
+            } else {
+                alert("City not found");
+                document.getElementById('loading-text')?.classList.remove('visible');
+            }
+        })
+        .catch(() => {
+            alert("Error searching city");
+            document.getElementById('loading-text')?.classList.remove('visible');
+        });
+});
+
+document.getElementById('my-location').addEventListener('click', () => {
+    navigator.geolocation.getCurrentPosition(p => {
+        document.querySelector('.WeatherPerDay').innerHTML = '';
+        document.querySelector('.WeatherPerHour').innerHTML = '';
+        document.getElementById('loading-text')?.classList.add('visible');
+        LoadData(p.coords.latitude, p.coords.longitude,1);
+    }, () => alert("Location denied"));
+});
+
+document.getElementById('pick-on-map').addEventListener('click', () => {
+    window.open('https://www.openstreetmap.org', '_blank');
+    setTimeout(() => alert("Right-click anywhere on the map → copy coordinates → come back and type the city name"), 500);
+});
+
+// Show loading indicator as soon as the page starts
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('loading-text')?.classList.add('visible');
+});
