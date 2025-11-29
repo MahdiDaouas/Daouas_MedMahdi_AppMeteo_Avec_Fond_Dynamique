@@ -254,11 +254,16 @@ function LoadData(latitude,longitude,x){
                 ville.textContent="Current Location"
             }
             WeatherAnimation(weather)
+            document.getElementsByClassName('hour-block')[0].classList.add('active');
+            const boxes = document.querySelectorAll(".box");
+            boxes.forEach(box => {
+                box.style.display = "flex";
+            });
 
             document.getElementById('loading-text')?.classList.remove('visible');
         });
 
-      weatherPerDay.appendChild(dayBlock);
+        weatherPerDay.appendChild(dayBlock);
     });
     
     
