@@ -1,34 +1,25 @@
-html, body {
+body {
     margin: 0;
     padding: 0;
-    height: 100%;
-    overflow: hidden; /* prevents scrolling */
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    background-attachment: fixed;
-    transition: background 1.5s ease-in-out;
+    min-height: 100vh;
 }
 .weather-overlay {
     position: absolute;
     top: -10vh; left: 0; right: 0; bottom: 0;
-    display: none;
+    opacity: 0;
+
     pointer-events: none;
     z-index: 1;
 }
-.bg-sunny          { background: linear-gradient(135deg, #87CEEB 0%, #00BFFF 30%, #1E90FF 70%, #4169E1 100%); background-size: 400% 400%; animation: sunnyGradient 15s ease infinite; }
-.bg-partly-cloudy { background: linear-gradient(135deg, #89CFF0 0%, #B0E0E6 40%, #87CEEB 70%, #4682B4 100%); background-size: 300% 300%; animation: partlyCloudyGradient 20s ease infinite; }
-.bg-cloudy         { background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 30%, #7f8c8d 70%, #636e72 100%); background-size: 200% 200%; animation: cloudyGradient 18s ease infinite; }
-.bg-rainy          { background: linear-gradient(135deg, #2c3e50 0%, #34495e 30%, #4e5f70 60%, #5d6d7e 100%); background-size: 400% 400%; animation: rainyGradient 12s ease infinite; }
-.bg-snowy          { background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 30%, #d6deeb 70%, #c0d8e8 100%); background-size: 300% 300%; animation: snowyGradient 25s ease infinite; }
-.bg-clear-night    { background: linear-gradient(135deg, #0b0c1a 0%, #14182e 30%, #1e2a47 70%, #2a3b5f 100%); background-size: 400% 400%; animation: nightGradient 30s ease infinite; }
-.cloud{
-    position: absolute ;
-    z-index: 1;
-}
-.cloud img{
-    width: 350px;
-    height: 250px;
-}
-#cloud1{
+.bg-sunny          { background: linear-gradient(135deg, #87CEEB 0%, #00BFFF 30%, #1E90FF 70%, #4169E1 100%); background-size: cover; animation: sunnyGradient 15s ease infinite; }
+.bg-partly-cloudy { background: linear-gradient(135deg, #89CFF0 0%, #B0E0E6 40%, #87CEEB 70%, #4682B4 100%); background-size: cover; animation: partlyCloudyGradient 20s ease infinite; }
+.bg-cloudy         { background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 30%, #7f8c8d 70%, #636e72 100%); background-size:cover; animation: cloudyGradient 18s ease infinite; }
+.bg-rainy          { background: linear-gradient(135deg, #2c3e50 0%, #34495e 30%, #4e5f70 60%, #5d6d7e 100%); background-size: cover; animation: rainyGradient 12s ease infinite; }
+.bg-snowy          { background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 30%, #d6deeb 70%, #c0d8e8 100%); background-size:cover; animation: snowyGradient 25s ease infinite; }
+.bg-clear-night    { background: linear-gradient(135deg, #0b0c1a 0%, #14182e 30%, #1e2a47 70%, #2a3b5f 100%); background-size: cover; animation: nightGradient 30s ease infinite; }
+
+
+/* #cloud1{
     left: 0;
 }
 #cloud2{
@@ -47,31 +38,9 @@ html, body {
 }
 #cloud6{
     left: 75%;
-}
-.rain{
-    position: absolute;
-    z-index: 0;
-    top:20vh;
-}
-.rain img{
-    width: 280px;
-    height: 90vh;
-}
-#rain1{
-    left: 5%;        
-}
-#rain2{
-    left:20%;        
-}
-#rain3{
-    left:40%;        
-}
-#rain4{
-    left:60%;        
-}
-#rain5{
-    left:77%;        
-}
+} */
+
+
 .wind{
     position: absolute;
     z-index: 1;
@@ -129,31 +98,60 @@ html, body {
 }
 #snow3{
     left:40%;        
-}
+}   
 #snow4{
     left:60%;        
 }
 #snow5{
     left:77%;        
 }
-
-.stars{
+.rainyClouds{
     position: absolute ;
     z-index: 1;
+    width: 90%;
+    align-items: flex-start;
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+}
+.rainyRains{
+    position: absolute ;
+    z-index: 1;
+    width: 90%;
+    margin:auto;
+    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    top: 20vh;
+}
+.cloudy{
+    position: absolute ;
+    z-index: 1;
+    width: 90%;
+    align-items: flex-start;
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+}
+.clear-night{
+    position: absolute ;
+    z-index: 1;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
 }
 .stars img{
-    width: 520px;
+    
+    width: 100%;
     height: 300px;
 }
-#stars1{
-    left: 0;
+.cloud img{
+    width: 150%;
+    height: 250px;
 }
-#stars2{
-    left: 35%;
+.rain img{
+    width: 100%;
+    height: 90vh;
 }
-#stars3{
-    left: 70%;
-}
+
 @keyframes sunnyGradient {
     0%   { background-position: 0% 50%; }
     50%  { background-position: 100% 50%; }
@@ -190,39 +188,55 @@ html, body {
 }
 
 
-
-.parent {
-    margin-top: 120px;
-    height: 90vh;
+.container{
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    gap: 20px;
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    gap: 25px;
     
 }
-.WeatherPerDay, .WeatherPerHour, .div3, .div4{
+
+.parent {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 7%;
+    height: 70%;
+    padding-right: 5%;
+    padding-left: 5%;
+
+}
+.middle{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.WeatherPerDay, .WeatherPerHour, .div3, .WeatherComment{
     background-color: aliceblue;
     z-index: 10;
     opacity: 70%;
     border: white solid 5px;
     border-radius: 5%;
 }
-.WeatherPerDay:hover, .WeatherPerHour:hover, .div3:hover, .div4:hover {
+.WeatherPerDay:hover, .WeatherPerHour:hover, .div3:hover, .WeatherComment:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 } 
 .WeatherPerDay {
-    grid-row: span 3;
-    grid-column: 1 / span 2; /* plus large */
+    width: 25%;
     display: flex;
     flex-direction: column;
     gap: 15px;
     padding: 10px;
-    height: 60vh;
+    height:60vh;
     overflow-y: auto;
-    width: 320px; /* fixe une largeur plus grande */
-    margin-left: 50px;
 }
 .day-block {
     display: flex;
@@ -250,10 +264,8 @@ html, body {
   font-weight: 600;
 }
 .WeatherPerHour {
-    height: 100%;
-    grid-column: span 3 / span 3;
-    grid-column-start: 3;
-    grid-row-start: 4;
+    width: 90%;
+    height: auto;
     display: flex;
     overflow-x: auto;       /* allow horizontal scroll */
     overflow-y: hidden;      
@@ -262,10 +274,10 @@ html, body {
     background: #f0f0f0;
     border-radius: 10px;
     scroll-behavior: smooth;
-    
+    scrollbar-width: thin;
 }
 .hour-block {
-    width: 10%;
+    width: 50px;
     background: white;
     border-right: 1px solid #ccc; /* thin separator line */
     display: flex;
@@ -273,7 +285,7 @@ html, body {
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 20px;
+    padding: 15px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 .hour-block:hover{
@@ -303,9 +315,6 @@ html, body {
 
 
 .div3 {
-    grid-column-start: 4;
-    grid-row-start: 2;
-    grid-row: span 2;
     background: rgba(255, 255, 255, 0.93);
     backdrop-filter: blur(14px);
     border: none;
@@ -318,28 +327,31 @@ html, body {
     gap: 5px;
     transition: all 0.4s ease;
     opacity: 90%;
+    max-height: fit-content;
+    width:fit-content;
 }
 .div3:hover {
     transform: translateY(-10px);
     box-shadow: 0 25px 55px rgba(0, 0, 0, 0.25);
     opacity: 98%;
 }
-.div4 {
-    grid-column-start: 6;
-    grid-row-start: 2;
+.WeatherComment {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #2d3436;
+    text-align: center;
+    transition: all 0.4s ease;
+    padding: 10px;
+    width: 25%;
 }
 
-@media (max-width: 768px) {
-    .parent {
-        display: flex;
-        flex-direction: column;
-        gap: 15px; /* smaller gap for phones */
-    }
-    .div1 { order: 4; }
-    .div2 { order: 3; }
-    .div3 { order: 1; }
-    .div4 { order: 2; }
-}
 .other{
     display: flex;
     justify-content: center;
@@ -382,24 +394,10 @@ html, body {
 }
 
 
+
 /* Responsive */
-@media (max-width: 768px) {
-    .div3 {
-        padding: 18px;
-        gap: 14px;
-    }
-    .box {
-        font-size: 1.2rem;
-        padding: 14px;
-    }
-    #temp {
-        font-size: 3.5rem !important;
-    }
-    #ville {
-        font-size: 1.6rem !important;
-    }
-}
-.hid{
+
+.hid , .hid1{
     display: none;
 }
 .hour-block.active {
@@ -416,10 +414,9 @@ html, body {
 
 
 
-/* Location selector inside the content area — under animations, above div4 */
+/* Location selector inside the content area — under animations, above .WeatherComment */
 #location-selector {
-    grid-column: 1 / -1;           /* full width */
-    grid-row: 1;                   /* place it on the first row */
+    width: 80%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -462,16 +459,7 @@ html, body {
 }
 
 /* Small screens */
-@media (max-width: 768px) {
-    #location-selector {
-        flex-direction: column;
-        margin: 10px;
-    }
-    #location-selector input,
-    #location-selector button {
-        width: 90%;
-    }
-}
+
 /* Loading text + typing dots animation */
 #loading-text {
     text-align: center;
@@ -511,4 +499,231 @@ html, body {
 /* Hide when not needed */
 #loading-text:not(.visible) {
     display: none;
+}
+
+@media (max-width: 1300px){
+
+}
+@media (max-width: 768px) {
+    .parent {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        gap: 15px; /* smaller gap for phones */
+    }
+    .WeatherPerDay { order: 4; }
+    .WeatherPerHour { order: 3;}
+    .location-selector { order: 5; }
+    .div3 { order: 1; }
+    .WeatherComment { order: 2; }
+}
+@media (max-width: 768px) {
+    body{
+        height: 100%;
+        overflow: auto;
+        background-attachment: scroll !important;     /* Fixes black/blank background on mobile */
+        background-position: center center !important;
+        background-size: cover !important;           /* Ensures gradient fills the screen */
+        background-repeat: no-repeat !important;
+    }
+    .bg-sunny,
+    .bg-partly-cloudy,
+    .bg-cloudy,
+    .bg-rainy,
+    .bg-snowy,
+    .bg-clear-night {
+        animation-duration: 35s !important;
+        background-size: 200% 200% !important;
+    }
+}
+@media (max-width: 768px) {
+    #location-selector {
+        flex-direction: column;
+        margin: 10px;
+    }
+    #location-selector input,
+    #location-selector button {
+        width: 90%;
+    }
+}
+/* ====================== RESPONSIVE LAYOUT ====================== */
+@media (max-width: 768px) {
+    .parent{
+        overflow-x: hidden !important;
+        position: relative;
+        top:15%;
+        height: auto;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+        gap: 18px;
+        width: 93%;
+    }
+    .container {
+        width: 100%;
+        position: relative;
+        height: auto;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+        gap: 18px;
+    }
+    .middle{
+        width: 100%;
+    }
+
+    /* Force the exact order you want on mobile/tablet */
+    .div3           { order: 1; }
+    .WeatherComment { order: 2; }
+    .WeatherPerHour { order: 3; }
+    .WeatherPerDay  { order: 4; }
+    #location-selector { order: 5; }
+
+    /* Full width blocks on small screens */
+    .WeatherPerDay,
+    .WeatherPerHour,
+    .div3,
+    .WeatherComment,
+    #location-selector {
+        width:100%;
+        max-width: none;
+        margin: 0 auto;
+    }
+
+    /* Adjust WeatherPerDay (7-day list) */
+    .WeatherPerDay {
+        margin: 0 auto;           /* horizontal centering */
+        width: fit-content;
+        height: auto;
+        min-height: 300px;
+        padding: 15px;
+    }
+
+    /* Hourly forecast becomes vertical scroll instead of horizontal */
+    .WeatherPerHour {
+        margin: 0 auto;           /* horizontal centering */
+        width: 80%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        height: auto;
+        max-height: 60vh;
+        padding: 10px;
+        gap: 12px;
+    }
+
+    .hour-block {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 16px;
+        border-radius: 12px;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .hour-block:last-child {
+        border-bottom: none;
+    }
+
+    /* Make location selector stack vertically */
+    #location-selector {
+        flex-direction: column;
+        padding: 16px;
+        gap: 12px;
+        width: 80%;
+    }
+
+    #location-selector input,
+    #location-selector button {
+        width: 80%;
+    }
+
+    /* Reduce big margins/paddings */
+    .WeatherComment {
+        margin: 0 auto;           /* horizontal centering */
+        width: 80%;
+    }
+
+    .div3 {
+        margin: 0 auto;           /* horizontal centering */
+        width: fit-content;        /* optional: slightly narrower card on phones */
+        text-align: center;       /* centers the text/content inside too */
+        align-items: center;
+    }
+
+    .WeatherPerHour,
+    .div3 {
+        position: static;
+    }
+    .wind{
+        display: none;
+    }
+    #cloud5, #cloud1, #rain5, #rain4, #rain3, #wind2, #wind1, #birds1, #birds2, #snow5, #snow4, #snow3 {
+        display: none;
+    }
+    .cloudy{
+    position: absolute ;
+    z-index: 1;
+    width: 85%;
+    align-items: flex-start;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    }
+    .cloud{
+        top:5%;
+    }
+    .stars img, .rain img,.snow img{
+        width:100%;
+    }
+    
+}
+
+/* Extra small phones */
+@media (max-width: 480px) {
+    .parent {
+        padding: 10px;
+        gap: 14px;
+    }
+
+    .box {
+        width: 100%;
+        padding: 14px;
+        font-size: 0.95rem;
+    }
+
+    #temp {
+        font-size: 2.2rem;
+    }
+
+    #ville {
+        font-size: 1.3rem;
+    }
+
+    .day-block {
+        padding: 14px;
+        font-size: 0.95rem;
+    }
+
+    .hour-block {
+        padding: 14px;
+        font-size: 0.95rem;
+    }
+
+    .hour-block .temp {
+        font-size: 1.4rem;
+    }
+    .cloud,
+    .rain,
+    .snow{
+        width: 90%;
+        height: 100%;
+    }
+    .cloud{
+        display: none;
+    }
 }

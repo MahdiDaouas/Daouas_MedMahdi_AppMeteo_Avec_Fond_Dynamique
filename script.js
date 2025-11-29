@@ -14,21 +14,46 @@ function initialiser(){ // hides all animated layers (clouds, rain, sun…)
     document.querySelector(".rainy").style.display = "none";
 }
 
+function WeatherComment(weather){
+    console.log("ahawaa : ",weather)
+    const com=document.getElementById('WeatherComment');
+    if (weather=="sunny" || weather=="partly-cloudy"){
+        com.textContent="Today’s weather is looking great. The sky will stay mostly clear, giving you plenty of sunlight and a bright atmosphere throughout the day. It’s a perfect opportunity to spend time outside, whether you’re going for a walk, meeting friends, or just enjoying fresh air. No need to worry about rain — dress comfortably and make the most of it";
+    }
+    else if(weather=="cloudy"){
+        com.textContent="The sky is completely covered with clouds today, creating a calm but slightly dull atmosphere. Even though there won’t be much sunshine, temperatures should stay stable and comfortable. It’s a great day for indoor activities or for a relaxed walk if you prefer cooler weather. No major weather risks expected.";
+    }
+    else if(weather=="foggy"){
+        com.textContent="Visibility is quite low due to fog, so it’s important to be cautious, especially when driving or walking near traffic. The air may feel humid and slightly cold, so wearing something warm is recommended. As the day progresses, visibility should slowly improve. Take your time outdoors and stay alert.";
+    }
+    else if(weather=="rainy"){
+        com.textContent="It’s going to be a rainy day, with periods of steady rain or passing showers. Make sure to take an umbrella or raincoat if you’re heading out. The humidity will be higher than usual, and the ground may become slippery, so watch your step. Outdoor plans might need some adjustment, but it’s a perfect day for staying cozy indoors."
+    }
+    else if(weather=="snowy"){
+        com.textContent="Snow is expected today, which may create a beautiful but cold atmosphere. Make sure to dress warmly and wear proper shoes, as sidewalks can become slippery very quickly. Visibility might drop during heavier snow periods, especially in the evening. If you’re going out, take your time and enjoy the scenery while staying safe."
+    }
+    else{
+        com.textContent="Thunderstorms are forecasted today, which means strong rain, lightning, and possibly hail. Try to avoid staying outdoors for long periods, especially in open areas. If possible, keep travel minimal and stay indoors when the storm peaks. Make sure to secure any outdoor objects at home, as sudden strong winds may occur."
+    }
+}
+
 function WeatherAnimation(weather) {
     console.log(weather)
     const hour=(document.getElementById("dateTemp").textContent).split(':')[0];
     const isDay = hour >= 7 && hour < 18;
-    if(!isDay && weather=="sunny"){
+    if(!isDay && (weather=="sunny" || weather=="partly-cloudy")){
         weather="clear-night"
     }
+    console.log(isDay)
+    console.log(weather)
     // 1. Hide all animation overlays
     document.querySelectorAll('.weather-overlay').forEach(div => {
-        div.style.display = 'none';
+        div.style.opacity = 0;
     });
 
     // 2. Show the correct animation overlay
     const overlay = document.querySelector(`.${weather}.weather-overlay`);
-    if (overlay) overlay.style.display = 'block';
+    if (overlay) overlay.style.opacity = 1;
 
     // 3. Apply ONLY the background class to body (safe & clean)
     document.body.classList.remove('bg-sunny', 'bg-partly-cloudy', 'bg-cloudy', 'bg-rainy', 'bg-snowy', 'bg-clear-night');
@@ -144,6 +169,7 @@ function LoadData(latitude,longitude,x){
             <div class="date">${day.date}</div>
             <div class="weather-range">${day.minTemp}° - ${day.maxTemp}°</div>
             <div class="icon">${day.icon}</div>
+            <div class="hid1">${day.weather_name}</div>
         `;
 
         // When clicking on a day
@@ -155,9 +181,15 @@ function LoadData(latitude,longitude,x){
             // 2️⃣ Clear current hourly display
             weatherPerHour.innerHTML = '';
 
+
             // 3️⃣ Determine which hours to show
             let hourDataToShow;
             const totalHours = hourlyData.time.length;
+
+            //add the comment section
+            com =dayBlock.getElementsByClassName('hid1')[0].textContent;
+            WeatherComment(com);
+
 
             if (index === 0) {
             // Today: start from current hour and show 24 hours total
@@ -255,7 +287,7 @@ function mapWeatherCodeToChar(code) {
     if (code === 2) return "partly-cloudy";
     if (code === 3) return "cloudy";
 
-    if (code === 45 || code === 48) return "fog";
+    if (code === 45 || code === 48) return "foggy";
 
     if ([61,63,65].includes(code) || [51,53,55].includes(code) || [56,57].includes(code) || [66,67].includes(code)) return "rainy";
 
@@ -324,3 +356,9 @@ document.getElementById('pick-on-map').addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('loading-text')?.classList.add('visible');
 });
+
+
+
+
+
+
