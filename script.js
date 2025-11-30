@@ -57,6 +57,7 @@ function WeatherAnimation(weather) {
 
     // 3. Apply ONLY the background class to body (safe & clean)
     document.body.classList.remove('bg-sunny', 'bg-partly-cloudy', 'bg-cloudy', 'bg-rainy', 'bg-snowy', 'bg-clear-night');
+    playAmbiance(weather);
     if(!isDay){
         weather="clear-night";
     }
@@ -145,16 +146,16 @@ function LoadData(latitude,longitude,x){
         relative_humidity_2m: hourly.relative_humidity_2m,
         wind_speed_10m: hourly.wind_speed_10m,
         cloud_cover: hourly.cloud_cover,
-        icon: hourly.weathercode.map(code => getWeatherIcon(code)),
+        icon: hourly.weathercode,
         weather_name: hourly.weathercode.map(code => mapWeatherCodeToChar(code))
-        };
+        }
 
         const dailyData = daily.time.map((time, i) => ({
         date: time,
         name: getDayName(time),
         minTemp: daily.temperature_2m_min[i],
         maxTemp: daily.temperature_2m_max[i],
-        icon: getWeatherIcon(daily.weathercode[i]),
+        icon: getWeatherIconDay(daily.weathercode[i]),
         weather_name: mapWeatherCodeToChar(daily.weathercode[i])
         }));
 
@@ -192,35 +193,35 @@ function LoadData(latitude,longitude,x){
 
 
             if (index === 0) {
-            // Today: start from current hour and show 24 hours total
-            const now = new Date();
-            const currentHourIndex = hourlyData.time.findIndex(t => t.startsWith(now.toISOString().slice(0, 13)));
-            hourDataToShow = [];
+                // Today: start from current hour and show 24 hours total
+                const now = new Date();
+                const currentHourIndex = hourlyData.time.findIndex(t => t.startsWith(now.toISOString().slice(0, 13)));
+                hourDataToShow = [];
 
-            for (let i = 1; i <= 24; i++) {
-                const idx = (currentHourIndex + i) % totalHours;
-                hourDataToShow.push({
-                time: hourlyData.time[idx],
-                temp: hourlyData.temperature_2m[idx],
-                icon: hourlyData.icon[idx],
-                weather: hourlyData.weather_name[idx],
-                hum: hourlyData.relative_humidity_2m[idx],
-                wind: hourlyData.wind_speed_10m[idx],
-                cloud: hourlyData.cloud_cover[idx]
-                });
-            }
+                for (let i = 1; i <= 24; i++) {
+                    const idx = (currentHourIndex + i) % totalHours;
+                    hourDataToShow.push({
+                    time: hourlyData.time[idx],
+                    temp: hourlyData.temperature_2m[idx],
+                    icon: getWeatherIcon(hourlyData.icon[idx],hourlyData.time[idx]),
+                    weather: hourlyData.weather_name[idx],
+                    hum: hourlyData.relative_humidity_2m[idx],
+                    wind: hourlyData.wind_speed_10m[idx],
+                    cloud: hourlyData.cloud_cover[idx]
+                    });
+                }
             } else {
-            // Other days: show 24 hours starting from midnight
-            const start = index * 24;
-            hourDataToShow = hourlyData.time.slice(start, start + 24).map((_, i) => ({
-                time: hourlyData.time[start + i],
-                temp: hourlyData.temperature_2m[start + i],
-                icon: hourlyData.icon[start + i],
-                weather: hourlyData.weather_name[start + i],
-                hum: hourlyData.relative_humidity_2m[start + i],
-                wind: hourlyData.wind_speed_10m[start + i],
-                cloud: hourlyData.cloud_cover[start + i]
-            }));
+                // Other days: show 24 hours starting from midnight
+                const start = index * 24;
+                hourDataToShow = hourlyData.time.slice(start, start + 24).map((_, i) => ({
+                    time: hourlyData.time[start + i],
+                    temp: hourlyData.temperature_2m[start + i],
+                    icon: getWeatherIcon(hourlyData.icon[start + i],hourlyData.time[start + i]),
+                    weather: hourlyData.weather_name[start + i],
+                    hum: hourlyData.relative_humidity_2m[start + i],
+                    wind: hourlyData.wind_speed_10m[start + i],
+                    cloud: hourlyData.cloud_cover[start + i]
+                }));
             }
 
             // 4️⃣ Fill WeatherPerHour
@@ -303,17 +304,32 @@ function mapWeatherCodeToChar(code) {
     return "unknown";
 }
 // Helper: get weather icon from code
-function getWeatherIcon(code) {
-  // simple icons for demo
-  if (code === 0) return '☀️';
-  if ([1, 2].includes(code)) return '🌤️';
-  if (code === 3) return '☁️';
-  if ([45, 48].includes(code)) return '🌫️';
-  if ([51, 61, 80].includes(code)) return '🌦️';
-  if ([63, 65, 81, 82].includes(code)) return '🌧️';
-  if ([71, 73, 75].includes(code)) return '❄️';
-  if (code === 95) return '⛈️';
-  return '🌈';
+function getWeatherIcon(code, time) {
+    console.log("wakt :",time);
+    const hour =new Date(time).getHours()
+    const isDay = hour >= 7 && hour < 18;
+    // simple icons for demo
+    if ((code === 0 || [1, 2].includes(code)) &&  !isDay) return '🌙';
+    if (code === 0) return '☀️';
+    if ([1, 2].includes(code)) return '🌤️';
+    if (code === 3) return '☁️';
+    if ([45, 48].includes(code)) return '🌫️';
+    if ([95,96,99].includes(code) || [80,81,82].includes(code)) return '⛈️';
+    if ([61,63,65].includes(code) || [51,53,55].includes(code) || [56,57].includes(code) || [66,67].includes(code)) return '🌧️';
+    if ([71,73,75].includes(code) || code === 77 || [85,86].includes(code)) return '❄️';
+    return '🌫️';
+}
+function getWeatherIconDay(code) {
+    // simple icons for demo
+    if ((code === 0 || code === 1)) return '☀️';
+    if (code === 2) return '🌤️';
+    if (code === 3) return '☁️';
+    if (code === 45 || code === 48) return '🌫️';
+    if ([51, 61, 80].includes(code)) return '🌦️';
+    if ([63, 65, 81, 82].includes(code)) return '🌧️';
+    if ([71, 73, 75].includes(code)) return '❄️';
+    if (code === 95) return '⛈️';
+    return '🌫️';
 }
 
 // Location selector (clean & simple)
@@ -363,7 +379,32 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+let currentAudio = null;
 
+function playAmbiance(weather) {
+    // Arrête le son précédent
+    
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+    }
 
+    // Mapping météo → fichier son
+    const sounds = {
+        "sunny": "audio/birds.mp3",
+        "partly-cloudy": "audio/birds.mp3",
+        "cloudy": "audio/wind.mp3",
+        "rainy": "audio/rain.mp3",
+        "thunderstorm": "audio/rain.mp3",
+        // /clear-night/foggy → silence
+    };
 
-
+    if (sounds[weather]) {
+        console.log("audioooo ", weather)
+        currentAudio = new Audio(sounds[weather]);
+        currentAudio.loop = true;
+        currentAudio.volume = 0.35;         // volume doux
+        currentAudio.play().catch(() => {}); // ignore les erreurs autoplay sur mobile
+    }
+}
